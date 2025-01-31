@@ -10,6 +10,8 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { authFormSchema } from "@/lib/functions/auth-form";
+import { FormType } from "@/lib/types/type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,19 +19,17 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type FormType = "sign-in" | "sign-up";
-
-const formSchema = z.object({
-    username: z.string().min(2).max(50),
-});
 const AuthForm = ({ type }: { type: FormType }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
+    const formSchema = authFormSchema(type);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            username: "",
+            fullName: "",
+            email: "",
         },
     });
 
@@ -82,7 +82,8 @@ const AuthForm = ({ type }: { type: FormType }) => {
                                     <FormControl>
                                         <Input
                                             placeholder="Enter your email"
-                                            className="border-none shadow-none p-0 outline-none ring-offset-transparent focus:ring-transparent focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 placeholder:text-light-200 text-[14px] leading-[20px] font-normal"
+                                            className="border-none shadow-none p-0 outline-none ring-offset-transparent focus:ring-transparent focus:ring-offset-0 focus-visible:outline-none
+                                            focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 placeholder:text-light-200 text-[14px] leading-[20px] font-normal"
                                             {...field}
                                         />
                                     </FormControl>
